@@ -1,0 +1,14 @@
+{
+  "name": "Sourcegraph",
+  "version": "0.0.1",
+  "description": "Shows you how to use libraries on GitHub by displaying usage examples from Sourcegraph",
+  "icons": {"128": "icon_128.png"},
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "css": ["github.css"],
+      "js": ["common.js", "github.js"]
+    }
+  ]
+}

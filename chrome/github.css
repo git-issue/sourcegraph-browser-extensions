@@ -1,0 +1,63 @@
+.sg-box {
+  border: solid 1px #cfcfcf;
+  border-radius: 3px;
+}
+.sg-box .box-content {
+  padding: 11px 19px;
+}
+.sg-box table {
+  margin-bottom: 0;
+}
+.sg-box .alert {
+  margin-bottom: 0;
+}
+.sg-box .status-bar {
+  background-color: #e8e8e8;
+  padding: 2px 10px;
+}
+.sg-box .status-bar a {
+  color: #999999;
+}
+.sg-box .action-bar {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 0;
+}
+.sg-box .action-bar a {
+  display: block;
+  padding: 11px 19px;
+}
+.sg-box .action-bar a:hover {
+  color: #555555;
+}
+.sg-box-header {
+  background-color: #f0f0f0;
+  padding: 11px 19px;
+}
+.sg-box-header h3 {
+  font-size: 1.2em;
+}
+.sg-box-header h3,
+.sg-box-header a.btn {
+  display: inline;
+}
+.sg-box-header a.btn {
+  margin-left: 10px;
+}
+.sg-box.small .sg-box-header {
+  padding: 2px 10px;
+}
+.sg-box.small .box-content {
+  padding: 2px 10px;
+}
+#sg {
+  width: 100%;
+  border: none;
+  overflow: hidden;
+  height: 150px;
+  resize: vertical;
+}
+#sg-container {
+  margin: 10px 0;
+}
