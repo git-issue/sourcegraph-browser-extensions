@@ -22,6 +22,9 @@ window.setInterval(function() {
 }, 1000);
 
 function GitHubPage(url, doc) {
+  // Ensure it's a public repo.
+  if (!doc.querySelector('body.vis-public')) return;
+
   this.url = url;
   this.repo = parseURL(this.url);
   if (!this.repo) return;
