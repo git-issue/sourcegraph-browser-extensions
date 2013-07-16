@@ -37,7 +37,7 @@ function GitHubPage(url, doc) {
     div.id = 'sg-container';
     var iframe = document.createElement('iframe');
     iframe.id = 'sg';
-    iframe.src = 'http://localhost:3000/_ext/chrome-ext/repos/' + this.repo.id;
+    iframe.src = '<%= url %>/_ext/chrome-ext/repos/' + this.repo.id;
     div.appendChild(iframe);
     this.precedesElem.insertBefore(div);
 

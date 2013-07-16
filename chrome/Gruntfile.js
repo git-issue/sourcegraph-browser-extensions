@@ -1,11 +1,25 @@
-/*global module:false*/
+/*global module*/
 module.exports = function(grunt) {
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.initConfig({
+  var userConfig = {
+    prodURL: 'https://sourcegraph.com',
+    devURL: 'http://localhost:3000',
+    /*global process*/
+    dev: process.env.DEV,
+    buildDir: 'build',
+  };
+  userConfig.url = userConfig.dev ? userConfig.devURL : userConfig.prodURL;
+
+  var taskConfig = {
     pkg: grunt.file.readJSON('package.json'),
+    clean: [
+      '<%= buildDir %>',
+    ],
     jshint: {
       options: {
         curly: false,
@@ -34,21 +48,68 @@ module.exports = function(grunt) {
         src: ['*.js']
       }
     },
-    less: {
-      src: {
-        files: {
-          'github.css': [
-            'github.less',
-          ],
+    copy: {
+      build: {
+        files: [
+          {
+            src: ['*.js', '*.css', '*.png', '!Gruntfile.js'],
+            dest: '<%= buildDir %>',
+            expand: true
+          }
+        ]
+      }
+    },
+    manifest: {
+      'name': 'Sourcegraph<%= dev ? " DEV" : "" %>',
+      'description': 'Shows you how to use libraries on GitHub by displaying usage examples from Sourcegraph',
+      'icons': {'128': 'icon_128.png'},
+      'manifest_version': 2,
+      'content_scripts': [
+        {
+          'matches': ['https://github.com/*'],
+          'css': ['github.css'],
+          'js': ['common.js', 'github.js']
         }
+      ],
+      'permissions': [
+        '<%= url %>/'
+      ]
+    },
+    compress: {
+      publish: {
+        options: {
+          archive: '<%= buildDir %>/sourcegraph-chrome-ext-<%= pkg.version %>.zip'
+        },
+        files: [
+          {src: ['<%= buildDir %>/**/*']}
+        ]
       }
     },
     watch: {
       src: {
         tasks: ['build', 'reload_chrome_extension'],
-        files: ['*.js', '*.less'],
+        files: ['*.js', '*.css'],
       },
     },
+  };
+
+  grunt.initConfig(grunt.util._.extend(taskConfig, userConfig));
+
+  grunt.registerTask('manifest', 'Generate manifest.json', function () {
+    var manifest = grunt.config('manifest');
+    manifest.version = grunt.config('pkg.version');
+    grunt.file.write(grunt.config('buildDir') + '/manifest.json', JSON.stringify(manifest, null, 2));
+  });
+
+  grunt.registerTask('process', 'Process JS files for substitutions', function() {
+    var file = grunt.config('buildDir') + '/github.js';
+    var tmpl = grunt.file.read(file);
+    grunt.file.write(file, grunt.template.process(tmpl, {
+      data: {
+        url: grunt.config('url'),
+        dev: grunt.config('dev'),
+      }
+    }));
   });
 
   grunt.registerTask('reload_chrome_extension', function() {
@@ -64,6 +125,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['less:src', 'jshint:src']);
+  grunt.registerTask('build', ['clean', 'jshint:src', 'manifest', 'copy:build', 'process:build']);
+  grunt.registerTask('publish', ['build', 'compress:publish']);
   grunt.registerTask('w', ['build:src', 'watch:src']);
 };
