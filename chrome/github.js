@@ -10,19 +10,44 @@ function main() {
 
 main();
 
+// Monitor URL bar for changes so that we catch PJAX navigations. Otherwise, if you go to a repo
+// page, click Issues, then click back to Code, you won't see our iframe.
+var lastURL = window.location.href;
+window.setInterval(function() {
+  var url = window.location.href;
+  if (url !== lastURL) {
+    main();
+    lastURL = url;
+  }
+}, 1000);
+
 function GitHubPage(url, doc) {
   this.url = url;
   this.repo = parseURL(this.url);
   if (!this.repo) return;
 
   this.doc = doc;
-  this.precedingElem = doc.querySelector('div.bubble.files-bubble');
-  if (!this.precedingElem) return;
+  this.precedesElem = doc.querySelector('div.file-navigation.in-mid-page');
+  if (!this.precedesElem) return;
 
   this.valid = true;
 
   this.inject = function() {
-    this.precedingElem.insertAdjacentHTML('beforeBegin', '<div id="sg-container"><iframe seamless id="sg" src="http://localhost:3000/_elem/repos/' + this.repo.id + '/examples"></iframe></div>');
+    var div = document.createElement('div');
+    div.id = 'sg-container';
+    var iframe = document.createElement('iframe');
+    iframe.id = 'sg';
+    iframe.src = 'http://localhost:3000/_ext/chrome-ext/repos/' + this.repo.id;
+    div.appendChild(iframe);
+    this.precedesElem.insertBefore(div);
+
+    window.addEventListener('message', function(e) {
+      var height = e.data.height;
+      iframe.style.height = height + 'px';
+      if (height > 20) {
+        iframe.style.opacity = '1.0';
+      }
+    }, false);
   };
 
   function parseURL(url) {

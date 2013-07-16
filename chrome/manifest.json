@@ -10,5 +10,9 @@
       "css": ["github.css"],
       "js": ["common.js", "github.js"]
     }
+  ],
+  "permissions": [
+    "http://localhost:3000/",
+    "https://sourcegraph.com/"
   ]
 }

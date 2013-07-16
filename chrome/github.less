@@ -1,15 +1,14 @@
-@import "../../app/ui/lib/variables.less";
-@import "../../app/ui/lib/sg.less";
-
 #sg {
     width: 100%;
     border: none;
     overflow: hidden;
-    height: 150px;
-    resize: vertical;
+    height: 48px; // appx. height of error messages
+    opacity: 0;
+
+    -webkit-transition: opacity 0.2s, height 0.2s ease-in-out;
 }
 
 #sg-container {
-    margin: 10px 0;
+    margin: 15px 0 0;
 }
 
