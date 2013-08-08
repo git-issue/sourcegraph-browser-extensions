@@ -36,6 +36,8 @@ function GitHubPage(url, doc) {
   this.valid = true;
 
   this.inject = function() {
+    if (doc.__sg_injected) return;
+    doc.__sg_injected = true;
     var div = document.createElement('div');
     div.id = 'sg-container';
     var iframe = document.createElement('iframe');
