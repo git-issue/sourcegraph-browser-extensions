@@ -1,6 +1,6 @@
 {
   "name": "sourcegraph-chrome-extension",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "dependencies": {},
   "devDependencies": {
     "async": "0.1.x",
