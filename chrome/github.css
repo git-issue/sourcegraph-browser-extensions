@@ -2,13 +2,14 @@
     width: 100%;
     border: none;
     overflow: hidden;
-    height: 48px; /* appx. height of error messages */
+    height: 0;
     opacity: 0;
+
+    margin: 15px 0 0;
 
     -webkit-transition: opacity 0.2s, height 0.2s ease-in-out;
 }
 
 #sg-container {
-    margin: 15px 0 0;
 }
 
