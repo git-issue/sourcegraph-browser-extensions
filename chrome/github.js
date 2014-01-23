@@ -78,8 +78,8 @@ function GitHubPage(url, doc) {
     var codeContainer = this.codeElem.querySelector('pre');
     var codeHTML = codeContainer.innerHTML;
     var reqBody = JSON.stringify({
-      'lang': 'python',
-      'repos': ['github.com/mitsuhiko/flask'],
+      // 'lang': 'python',
+      // 'repos': ['github.com/mitsuhiko/flask'],
 
       'file': this.info.path,
       'repo': this.info.repoid,
