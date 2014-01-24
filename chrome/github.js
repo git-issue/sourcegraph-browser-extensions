@@ -88,6 +88,10 @@ function GitHubPage(url, doc) {
     req.onload = function() {
       // Replace code with annotated code
       codeContainer.innerHTML = this.response.snippets[0];
+      var links = codeContainer.querySelectorAll('a.sg-link[data-sg-link]');
+      for (var i = 0; i < links.length; i++) {
+        links[i].title = 'View example usages, documentation, and popularity on Sourcegraph';
+      }
 
       // Update style
       var style = document.createElement('style');
