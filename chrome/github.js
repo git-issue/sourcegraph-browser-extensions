@@ -78,18 +78,22 @@ function GitHubPage(url, doc) {
     var codeContainer = this.codeElem.querySelector('pre');
     var codeHTML = codeContainer.innerHTML;
     var reqBody = JSON.stringify({
-      // 'lang': 'python',
-      // 'repos': ['github.com/mitsuhiko/flask'],
-
-      'file': this.info.path,
-      'repo': this.info.repoid,
+      'params': {
+        'file': this.info.path,
+        'repo': this.info.repoid,
+      },
       'snippets': [codeHTML],
     });
 
     var req = new XMLHttpRequest();
     req.onload = function() {
-      // TODO: too slow
+      // Replace code with annotated code
       codeContainer.innerHTML = this.response.snippets[0];
+
+      // Update style
+      var style = document.createElement('style');
+      style.innerHTML = 'a.sg-link[data-sg-link] { pointer-events: auto !important; color: inherit; border-radius: 2px; background: rgba(255,255,0,0.30); border: 1px solid #e5e600; }\na.sg-link[data-sg-link]:hover { cursor: pointer; background: rgba(255,255,0,1); text-decoration: none; }';
+      document.getElementsByTagName('head')[0].appendChild(style);
     };
     req.open('post', 'http://localhost:3000/api/snippet', true);
     req.responseType = 'json';
