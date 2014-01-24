@@ -1,6 +1,6 @@
 function main() {
   var page = new GitHubPage(window.location.href, document);
-  if (page.isGitHubPage) {
+  if (page.isValidGitHubPage) {
     console.log('Valid GitHub page:', page.info);
     page.inject();
   } else {
@@ -30,7 +30,7 @@ function GitHubPage(url, doc) {
   if (!this.info) return;
 
   // If we reach here, it's some sort of GitHub page
-  this.isGitHubPage = true;
+  this.isValidGitHubPage = true;
 
   this.doc = doc;
   this.postPanelElem = doc.querySelector('div.file-navigation.in-mid-page');
