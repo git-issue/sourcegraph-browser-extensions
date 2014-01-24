@@ -1,6 +1,6 @@
 function main() {
   var page = new GitHubPage(window.location.href, document);
-  if (page.isValid()) {
+  if (page.isGitHubPage) {
     console.log('Valid GitHub page:', page.info);
     page.inject();
   } else {
@@ -22,16 +22,15 @@ window.setInterval(function() {
 }, 1000);
 
 function GitHubPage(url, doc) {
-  this.isValid = function() {
-    return this.isRepoPage || this.isFilePage;
-  };
-
   // Ensure it's a public repo.
   if (!doc.querySelector('body.vis-public')) return;
 
   this.url = url;
   this.info = parseURL(this.url);
   if (!this.info) return;
+
+  // If we reach here, it's some sort of GitHub page
+  this.isGitHubPage = true;
 
   this.doc = doc;
   this.postPanelElem = doc.querySelector('div.file-navigation.in-mid-page');
@@ -45,9 +44,6 @@ function GitHubPage(url, doc) {
   }
 
   this.inject = function() {
-    if (doc.__sg_injected) return;
-    doc.__sg_injected = true;
-
     if (this.isRepoPage) {
       this.injectPanel();
     }
@@ -57,6 +53,9 @@ function GitHubPage(url, doc) {
   };
 
   this.injectPanel = function() {
+    if (doc.__sg_panel_injected) return;
+    doc.__sg_panel_injected = true;
+
     var div = document.createElement('div');
     div.id = 'sg-container';
     var iframe = document.createElement('iframe');
