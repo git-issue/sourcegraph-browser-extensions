@@ -46,9 +46,10 @@ function GitHubPage(url, doc) {
   this.inject = function() {
     if (this.isRepoPage) {
       this.injectPanel();
+      this.annotateReadme();
     }
     if (this.isFilePage) {
-      this.injectAnnotations();
+      this.annotateCodeFile();
     }
   };
 
@@ -73,39 +74,70 @@ function GitHubPage(url, doc) {
     }, false);
   };
 
-  this.injectAnnotations = function() {
+  this.annotateReadme = function() {
+    var readmeContainer = document.querySelector('div#readme');
+    if (!readmeContainer) return;
+
+    var codeContainers = readmeContainer.querySelectorAll('pre');
+    var codeHTML = [];
+    for (var i = 0; i < codeContainers.length; i++) {
+      codeHTML[i] = codeContainers[i].innerHTML;
+    }
+    requestAnnotation({
+      'params': {
+        'includeRepos': [this.info.repoid],
+      },
+      'snippets': codeHTML,
+    }, function(response) {
+      if (response.snippets.length !== codeContainers.length) {
+        return;
+      }
+      for (var i = 0; i < codeContainers.length; i++) {
+        codeContainers[i].innerHTML = response.snippets[i];
+      }
+      addAnnotationStyle();
+    });
+  };
+
+  this.annotateCodeFile = function() {
     var codeContainer = this.codeElem.querySelector('pre');
     var codeHTML = codeContainer.innerHTML;
-    var reqBody = JSON.stringify({
+    requestAnnotation({
       'params': {
         'file': this.info.path,
         'repo': this.info.repoid,
       },
       'snippets': [codeHTML],
+    }, function(response) {
+      codeContainer.innerHTML = response.snippets[0];
+      addAnnotationStyle();
     });
+  };
 
+  function addAnnotationStyle() {
+    var style = document.createElement('style');
+    style.innerHTML = 'a.sg-link[data-sg-link] { pointer-events: auto !important; color: inherit; border-radius: 2px; background: rgba(255,255,0,0.30); border: 1px solid #e5e600; }\na.sg-link[data-sg-link]:hover { cursor: pointer; background: rgba(255,255,0,1); text-decoration: none; }';
+    document.getElementsByTagName('head')[0].appendChild(style);
+
+    var links = document.querySelectorAll('a.sg-link[data-sg-link]');
+    for (var i = 0; i < links.length; i++) {
+      links[i].title = 'View example usages, documentation, and popularity on Sourcegraph';
+    }
+  }
+
+  function requestAnnotation(params, callback) {
+    var reqBody = JSON.stringify(params);
     var req = new XMLHttpRequest();
     req.onload = function() {
-      // Replace code with annotated code
-      codeContainer.innerHTML = this.response.snippets[0];
-      var links = codeContainer.querySelectorAll('a.sg-link[data-sg-link]');
-      for (var i = 0; i < links.length; i++) {
-        links[i].title = 'View example usages, documentation, and popularity on Sourcegraph';
-      }
-
-      // Update style
-      var style = document.createElement('style');
-      style.innerHTML = 'a.sg-link[data-sg-link] { pointer-events: auto !important; color: inherit; border-radius: 2px; background: rgba(255,255,0,0.30); border: 1px solid #e5e600; }\na.sg-link[data-sg-link]:hover { cursor: pointer; background: rgba(255,255,0,1); text-decoration: none; }';
-      document.getElementsByTagName('head')[0].appendChild(style);
+      callback(this.response);
     };
     req.open('post', 'http://localhost:3000/api/snippet', true);
     req.responseType = 'json';
     req.send(reqBody);
-  };
+  }
 
   function parseURL(url) {
     var m = url.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)(?:\/blob\/([^\/]+)\/(.+))?/);
-
     if (m) {
       var owner = m[1], name = m[2], branch = m[3], path = m[4];
       return {
