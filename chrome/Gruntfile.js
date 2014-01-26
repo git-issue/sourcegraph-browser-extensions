@@ -52,7 +52,7 @@ module.exports = function(grunt) {
       build: {
         files: [
           {
-            src: ['*.js', '*.css', '*.png', '!Gruntfile.js'],
+            src: ['*.js', '*.css', '*.png', '*.html', '!Gruntfile.js'],
             dest: '<%= buildDir %>',
             expand: true
           }
@@ -72,8 +72,10 @@ module.exports = function(grunt) {
         }
       ],
       'permissions': [
+        'storage',
         '<%= url %>/'
-      ]
+      ],
+      'options_page': 'options.html'
     },
     compress: {
       publish: {

@@ -1,11 +1,20 @@
 function main() {
-  var page = new GitHubPage(window.location.href, document);
-  if (page.isValidGitHubPage) {
-    console.log('Valid GitHub page:', page.info);
-    page.inject();
-  } else {
-    console.log('Not a valid GitHub page:', window.location.href);
-  }
+  chrome.storage.local.get(['annotate', 'repoPanel'], function(settings) {
+    if (settings.repoPanel === undefined) {
+      settings.repoPanel = true;
+    }
+    if (settings.annotate === undefined) {
+      settings.annotate = true;
+    }
+
+    var page = new GitHubPage(window.location.href, document);
+    if (page.isValidGitHubPage) {
+      console.log('Valid GitHub page:', page.info);
+      page.inject(settings);
+    } else {
+      console.log('Not a valid GitHub page:', window.location.href);
+    }
+  });
 }
 
 main();
@@ -43,12 +52,16 @@ function GitHubPage(url, doc) {
     this.isFilePage = true;
   }
 
-  this.inject = function() {
+  this.inject = function(settings) {
     if (this.isRepoPage) {
-      this.injectPanel();
-      this.annotateReadme();
+      if (settings.repoPanel) {
+        this.injectPanel();
+      }
+      if (settings.annotate) {
+        this.annotateReadme();
+      }
     }
-    if (this.isFilePage) {
+    if (settings.annotate && this.isFilePage) {
       this.annotateCodeFile();
     }
   };
@@ -89,7 +102,7 @@ function GitHubPage(url, doc) {
       },
       'snippets': codeHTML,
     }, function(response) {
-      if (response.snippets.length !== codeContainers.length) {
+      if (!response || !response.snippets || response.snippets.length !== codeContainers.length) {
         return;
       }
       for (var i = 0; i < codeContainers.length; i++) {
@@ -100,7 +113,15 @@ function GitHubPage(url, doc) {
   };
 
   this.annotateCodeFile = function() {
+    if (!this.CodeElem) {
+      return;
+    }
+
     var codeContainer = this.codeElem.querySelector('pre');
+    if (!codeContainer) {
+      return;
+    }
+
     var codeHTML = codeContainer.innerHTML;
     requestAnnotation({
       'params': {
@@ -109,6 +130,9 @@ function GitHubPage(url, doc) {
       },
       'snippets': [codeHTML],
     }, function(response) {
+      if (!response || !response.snippets || response.snippets.length !== 1) {
+        return;
+      }
       codeContainer.innerHTML = response.snippets[0];
       addAnnotationStyle();
     });
@@ -131,7 +155,7 @@ function GitHubPage(url, doc) {
     req.onload = function() {
       callback(this.response);
     };
-    req.open('post', 'http://localhost:3000/api/snippet', true);
+    req.open('post', '<%= url %>/api/snippet', true);
     req.responseType = 'json';
     req.send(reqBody);
   }
