@@ -113,7 +113,7 @@ function GitHubPage(url, doc) {
   };
 
   this.annotateCodeFile = function() {
-    if (!this.CodeElem) {
+    if (!this.codeElem) {
       return;
     }
 
