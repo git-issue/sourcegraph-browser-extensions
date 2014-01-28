@@ -55,7 +55,13 @@ module.exports = function(grunt) {
             src: ['*.js', '*.css', '*.png', '*.html', '!Gruntfile.js'],
             dest: '<%= buildDir %>',
             expand: true
-          }
+          },
+          {
+            src: ['vendor/bootstrap/dist/css/bootstrap.min.css'],
+            dest: '<%= buildDir %>',
+            expand: true,
+            flatten: true,
+          },
         ]
       }
     },
