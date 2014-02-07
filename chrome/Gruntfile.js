@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
   var userConfig = {
     prodURL: 'https://sourcegraph.com',
-    devURL: 'http://localhost:3000',
+    devURL: 'https://localhost:3000',
     /*global process*/
     dev: process.env.DEV,
     buildDir: 'build',
@@ -57,7 +57,7 @@ module.exports = function(grunt) {
             expand: true
           },
           {
-            src: ['vendor/bootstrap/dist/css/bootstrap.min.css'],
+            src: ['../bower_components/bootstrap-sass/dist/css/bootstrap.min.css'],
             dest: '<%= buildDir %>',
             expand: true,
             flatten: true,
@@ -124,7 +124,7 @@ module.exports = function(grunt) {
     var done = this.async();
     /*global require*/
     var exec = require('child_process').exec;
-    exec('chromium http://reload.extensions', function(err) {
+    exec('chromium-browser http://reload.extensions', function(err) {
       if (err) {
         grunt.log.writeln(err);
         done(false);
