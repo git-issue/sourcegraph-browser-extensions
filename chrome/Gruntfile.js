@@ -67,7 +67,7 @@ module.exports = function(grunt) {
     },
     manifest: {
       'name': 'Sourcegraph<%= dev ? " DEV" : "" %>',
-      'description': 'Shows you how to use libraries on GitHub by displaying usage examples from Sourcegraph',
+      'description': 'Shows you how to use libraries on GitHub by annotating code and displaying usage examples from Sourcegraph',
       'icons': {'128': 'icon_128.png'},
       'manifest_version': 2,
       'content_scripts': [
