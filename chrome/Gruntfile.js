@@ -56,12 +56,7 @@ module.exports = function(grunt) {
             dest: '<%= buildDir %>',
             expand: true
           },
-          {
-            src: ['../bower_components/bootstrap-sass/dist/css/bootstrap.min.css'],
-            dest: '<%= buildDir %>',
-            expand: true,
-            flatten: true,
-          },
+          // TODO(sqs): insert bootstrap cdn stylesheet
         ]
       }
     },
