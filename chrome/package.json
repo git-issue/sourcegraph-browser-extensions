@@ -1,15 +1,17 @@
 {
   "name": "sourcegraph-chrome-extension",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
-    "async": "0.1.x",
-    "grunt": "~0.4.0",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt-contrib-jshint": "~0.4.3",
-    "grunt-contrib-less": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-compress": "~0.5.2"
+    "gulp-clean": "~0.3.0",
+    "gulp-cleanhtml": "0.0.2",
+    "gulp-minify-css": "~0.3.5",
+    "gulp-uglify": "~0.3.1",
+    "gulp-zip": "~0.4.0",
+    "gulp-strip-debug": "~0.3.0",
+    "gulp": "~3.8.1",
+    "gulp-jshint": "~1.6.3",
+    "gulp-preprocess": "~1.1.1",
+    "gulp-template": "~0.1.1"
   }
 }
