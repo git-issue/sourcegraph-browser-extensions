@@ -1,18 +1,19 @@
 {
-  'name': 'Sourcegraph<%= DEV ? "DEV" : "" %>'
-  'description': 'Shows you how to use libraries on GitHub by annotating code and displaying usage examples from Sourcegraph',
-  'icons': {'128': 'icon_128.png'},
-  'manifest_version': 2,
-  'content_scripts': [
+  "name": "Sourcegraph<%= DEV ? "DEV" : "" %>",
+  "version": "1.0.0",
+  "description": "Shows you how to use libraries on GitHub by annotating code and displaying usage examples from Sourcegraph",
+  "icons": {"128": "icon_128.png"},
+  "content_scripts": [
     {
-      'matches': ['https://github.com/*'],
-      'css': ['github.css'],
-      'js': ['common.js', 'github.js']
+      "matches": ["https://github.com/*"],
+      "css": ["github.css"],
+      "js": ["github.js"]
     }
   ],
-  'permissions': [
-    'storage',
-    '<%= url %>/'
+  "permissions": [
+    "storage",
+    "<%= url %>/"
   ],
-  'options_page': 'options.html'
+  "content_security_policy": "script-src 'self' <%= url %>; object-src 'self' <%= url %>",
+  "manifest_version": 2
 }
