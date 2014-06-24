@@ -1,6 +1,19 @@
 function main() {
-  // TODO: need to run this not only on new page load, but also push-state!
+  // Run on first page load
+  maybeAnnotatePage();
 
+  // Run on push-state
+  //
+  // (Hack: we need to listen to GitHub jquery-pjax events using the same instance of jQuery that fires the events)
+  var pageScript = document.createElement('script');
+  pageScript.innerHTML = '$(document).on("pjax:success", function () { var evt = new Event("PJAX_PUSH_STATE_0923"); document.dispatchEvent(evt); });';
+  document.querySelector('body').appendChild(pageScript);
+  document.addEventListener('PJAX_PUSH_STATE_0923', function() {
+    maybeAnnotatePage();
+  });
+}
+
+function maybeAnnotatePage() {
   var page = new GitHubPage(window.location.href, document);
   if (page.isValidGitHubPage) {
     console.log('Valid public GitHub page:', page.info);
