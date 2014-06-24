@@ -48,7 +48,9 @@ function GitHubPage(url, doc) {
           var codeWrapper = doc.querySelector('.blob-wrapper');
           var explain = doc.createElement('div')
           explain.id = "sg-alert";
-          explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file. <span class="inline-button"><a href="'+urlToRepoCommit(info.repoid,  info.branch)+'" target="_blank">Process it now</a></span>';
+
+          // TODO(bliu): show a different message depending if file never processed, unsupported language, or previous build failed
+          explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="inline-button"><a href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>.';
           codeWrapper.insertBefore(explain, codeWrapper.firstChild);
           return;
         }
@@ -86,8 +88,12 @@ function GitHubPage(url, doc) {
     return '<%= url %>/'+escape(repo_id)+'@'+escape(commit_id);
   }
 
+  function urlToFile(repo_id, commit_id, path) {
+    return urlToRepoCommit(repo_id, commit_id) + '/.tree/' + escape(path);
+  }
+
   function parseURL(url) {
-    var m = url.match(/^https:\/\/github\.com\/([^\/#]+)\/([^\/#]+)(?:\/blob\/([^\/#]+)\/([^\/#]+))?(?:#[^\/]*)?/);
+    var m = url.match(/^https:\/\/github\.com\/([^\/#]+)\/([^\/#]+)(?:\/blob\/([^\/#]+)\/([^#]+))?(?:#[^\/]*)?/);
     if (m) {
       var owner = m[1], name = m[2], branch = m[3], path = m[4];
       return {
