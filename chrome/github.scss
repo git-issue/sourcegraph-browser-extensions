@@ -1,5 +1,5 @@
 #sg-container {
-    -webkit-transition: opacity 0.2s, height 0.2s ease-in-out;
+    opacity: 0;
     background-color: black;
 
     /* Pretty printing styles. Used with prettify.js. */
@@ -54,4 +54,10 @@
         pre .atv, code .atv { color: #060; }
     }
 
+}
+
+#sg-container.active {
+    opacity: 1.0;
+    transition-property: all;
+    transition-duration: 0.2s;
 }

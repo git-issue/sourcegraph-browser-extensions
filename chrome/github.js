@@ -43,6 +43,7 @@ function GitHubPage(url, doc) {
     if (this.isFilePage) {
       getAnnotatedCode(this.info, codeElem, function(fileInfo) {
         codeElem.innerHTML = '';
+
         var sgContainer = doc.createElement('div');
         sgContainer.id = "sg-container";
         sgContainer.innerHTML = '<pre>' + fileInfo.ContentsString + '</pre>';
@@ -51,6 +52,10 @@ function GitHubPage(url, doc) {
           refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
         }
         codeElem.appendChild(sgContainer);
+        window.setTimeout(function() {
+          sgContainer.classList.add('active');
+          codeElem.style.backgroundColor = 'black';
+        }, 0);
       });
     }
   };

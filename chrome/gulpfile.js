@@ -94,7 +94,7 @@ gulp.task('reload_chrome_extensions', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['*.js', '*.css', '*.html', '*.json'], ['build', 'reload_chrome_extensions']);
+  gulp.watch(['*.js', '*.scss', '*.html', '*.json'], ['build', 'reload_chrome_extensions']);
 });
 
 // Run all tasks after build directory has been cleaned
