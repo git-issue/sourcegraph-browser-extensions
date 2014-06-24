@@ -1,9 +1,13 @@
+$sg-blue-color: #4E9BD4;//#459de4;
+
 #sg-container {
     opacity: 0;
     background-color: black;
 
     /* Pretty printing styles. Used with prettify.js. */
     /* Vim sunburst theme by David Leibovic */
+
+    pre { color: #AEAEAE; } /* multi-line comment - gray */
 
     pre .str, code .str { color: #65B042; } /* string  - green */
     pre .kwd, code .kwd { color: #E28964; } /* keyword - dark pink */
@@ -60,4 +64,35 @@
     opacity: 1.0;
     transition-property: all;
     transition-duration: 0.2s;
+}
+
+#sg-alert {
+    padding: 0.75em 1em;
+    background-color: #e7ecee;
+    color: black;
+    border-bottom: 1px solid #d2d9dd;
+
+    .inline-button {
+        padding: 0.3em 0.5em;
+        border-radius: 3px;
+        background-image: linear-gradient(#fcfcfc, #eee);
+        color: #333;
+        border: 1px solid #d5d5d5;
+        font-weight: bold;
+
+        &:hover {
+            background-image: none;
+            background-color: $sg-blue-color;
+            color: white;
+            a {
+                color: white;
+            }
+        }
+        a {
+            color: #333;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
 }

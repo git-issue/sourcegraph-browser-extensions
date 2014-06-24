@@ -30,18 +30,29 @@ function GitHubPage(url, doc) {
   this.doc = doc;
   this.info = parseURL(this.url);
   if (!this.info) return;
+  var info = this.info;
 
   // If we reach here, it's some sort of GitHub page
   this.isValidGitHubPage = true;
 
   var codeElem = doc.querySelector('table.file-code .code-body');
   if (codeElem) {
-    this.isFilePage = true;
+    this.isCodePage = true;
   }
 
   this.inject = function() {
-    if (this.isFilePage) {
+    if (this.isCodePage) {
       getAnnotatedCode(this.info, codeElem, function(fileInfo) {
+        if (!fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
+          // Don't modify the view if no references are present
+          var codeWrapper = doc.querySelector('.blob-wrapper');
+          var explain = doc.createElement('div')
+          explain.id = "sg-alert";
+          explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file. <span class="inline-button"><a href="'+urlToRepoCommit(info.repoid,  info.branch)+'" target="_blank">Process it now</a></span>';
+          codeWrapper.insertBefore(explain, codeWrapper.firstChild);
+          return;
+        }
+
         codeElem.innerHTML = '';
 
         var sgContainer = doc.createElement('div');
@@ -65,16 +76,20 @@ function GitHubPage(url, doc) {
     req.onload = function() {
       callback(this.response);
     }
-    req.open('get', '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true', true);
+    var reqURL = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
+    req.open('get', reqURL, true);
     req.responseType = 'json';
     req.send();
+  }
+
+  function urlToRepoCommit(repo_id, commit_id) {
+    return '<%= url %>/'+escape(repo_id)+'@'+escape(commit_id);
   }
 
   function parseURL(url) {
     var m = url.match(/^https:\/\/github\.com\/([^\/#]+)\/([^\/#]+)(?:\/blob\/([^\/#]+)\/([^\/#]+))?(?:#[^\/]*)?/);
     if (m) {
       var owner = m[1], name = m[2], branch = m[3], path = m[4];
-      console.log(path);
       return {
         repoid: 'github.com/' + owner + '/' + name,
         owner: owner,
