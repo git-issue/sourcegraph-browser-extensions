@@ -15,7 +15,7 @@ var context = {
   DEV: process.env.DEV,
 
   /*global process*/
-  url: (process.env.DEV ? 'http://localhost:13000' : 'https://aws-deploy.sgdev.org'),
+  url: (process.env.DEV ? 'http://localhost:3000' : 'https://aws-deploy.sgdev.org'),
   // url: process.env.DEV ? 'http://localhost:3000' : 'https://sourcegraph.com'
 };
 
