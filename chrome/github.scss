@@ -1,4 +1,10 @@
 $sg-blue-color: #4E9BD4;//#459de4;
+$gh-button-background: linear-gradient(#fcfcfc, #eee);
+$gh-button-border: 1px solid #d5d5d5;
+$gh-button-border-radius: 3px;
+$gh-text-color: #333;
+$gh-header-background-color: #e7ecee;
+$gh-header-border: 1px solid #d2d9dd;
 
 #sg-container {
     opacity: 0;
@@ -68,16 +74,15 @@ $sg-blue-color: #4E9BD4;//#459de4;
 
 #sg-alert {
     padding: 0.75em 1em;
-    background-color: #e7ecee;
-    color: black;
-    border-bottom: 1px solid #d2d9dd;
+    border-bottom: $gh-header-border;
+    background-color: $gh-header-background-color;
 
     .inline-button {
         padding: 0.3em 0.5em;
-        border-radius: 3px;
-        background-image: linear-gradient(#fcfcfc, #eee);
-        color: #333;
-        border: 1px solid #d5d5d5;
+        border-radius: $gh-button-border-radius;
+        background-image: $gh-button-background;
+        color: $gh-text-color;
+        border: $gh-button-border;
         font-weight: bold;
 
         &:hover {
@@ -89,7 +94,7 @@ $sg-blue-color: #4E9BD4;//#459de4;
             }
         }
         a {
-            color: #333;
+            color: $gh-text-color;
             &:hover {
                 text-decoration: none;
             }
