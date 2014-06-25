@@ -10,6 +10,14 @@ $gh-header-border: 1px solid #d2d9dd;
     opacity: 0;
     background-color: black;
 
+    a {
+        text-decoration: underline;
+        color: #333;
+        &:hover {
+            color: $sg-blue-color !important;
+        }
+    }
+
     /* Pretty printing styles. Used with prettify.js. */
     /* Vim sunburst theme by David Leibovic */
 
