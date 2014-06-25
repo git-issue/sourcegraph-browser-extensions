@@ -76,6 +76,7 @@ function GitHubPage(url, doc) {
         var refs = sgContainer.querySelectorAll('a.ref')
         for (var i = 0; i < refs.length; i++) {
           refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
+          refs[i].target = '_blank';
         }
         codeElem.appendChild(sgContainer);
         window.setTimeout(function() {
