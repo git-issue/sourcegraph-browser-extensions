@@ -56,11 +56,14 @@ function GitHubPage(url, doc) {
           // Don't modify the view if no references are present
           getRepositoryBuilds(info.repoid, function(builds) {
             if (builds && builds.length > 0) {
+              // TODO(bliu): this is "commit most recently processed", but it really should be "last processed commit in history"
+              var lastAvailableCommit = builds[0].CommitID;
+
               // If valid builds are present, link to them
               var codeWrapper = doc.querySelector('.blob-wrapper');
               var explain = doc.createElement('div')
               explain.id = "sg-alert";
-              explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="sg-inline-button"><a target="_blank" href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>';
+              explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="sg-inline-button"><a target="_blank" href="'+urlToFile(info.repoid, lastAvailableCommit, info.path)+'">Last processed revision</a></span>';
               codeWrapper.insertBefore(explain, codeWrapper.firstChild);
             }
           });
