@@ -42,19 +42,23 @@ function GitHubPage(url, doc) {
 
   this.inject = function() {
     if (this.isCodePage) {
-      getAnnotatedCode(this.info, codeElem, function(fileInfo) {
+      getAnnotatedCode(info, codeElem, function(fileInfo) {
         if (!fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
           // Don't modify the view if no references are present
-          var codeWrapper = doc.querySelector('.blob-wrapper');
-          var explain = doc.createElement('div')
-          explain.id = "sg-alert";
-
-          // TODO(bliu): show a different message depending if file never processed, unsupported language, or previous build failed
-          explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="inline-button"><a href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>.';
-          codeWrapper.insertBefore(explain, codeWrapper.firstChild);
+          getRepositoryBuilds(info.repoid, function(builds) {
+            if (builds && builds.length > 0) {
+              // If valid builds are present, link to them
+              var codeWrapper = doc.querySelector('.blob-wrapper');
+              var explain = doc.createElement('div')
+              explain.id = "sg-alert";
+              explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="inline-button"><a href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>.';
+              codeWrapper.insertBefore(explain, codeWrapper.firstChild);
+            }
+          });
           return;
         }
 
+        // Replace unlinked code with linked code
         codeElem.innerHTML = '';
 
         var sgContainer = doc.createElement('div');
@@ -74,14 +78,13 @@ function GitHubPage(url, doc) {
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var req = new XMLHttpRequest();
-    req.onload = function() {
-      callback(this.response);
-    }
-    var reqURL = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
-    req.open('get', reqURL, true);
-    req.responseType = 'json';
-    req.send();
+    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
+    get(url, callback);
+  }
+
+  function getRepositoryBuilds(repo_id, callback) {
+    var url = '<%= url %>/api/repos/'+repo_id+'/.builds?Sort=updated_at&Direction=desc&PerPage=5&Succeeded=true';
+    get(url, callback);
   }
 
   function urlToRepoCommit(repo_id, commit_id) {
@@ -90,6 +93,16 @@ function GitHubPage(url, doc) {
 
   function urlToFile(repo_id, commit_id, path) {
     return urlToRepoCommit(repo_id, commit_id) + '/.tree/' + escape(path);
+  }
+
+  function get(url, callback) {
+    var req = new  XMLHttpRequest();
+    req.onload = function() {
+      callback(this.response);
+    }
+    req.open('get', url, true);
+    req.responseType = 'json';
+    req.send();
   }
 
   function parseURL(url) {
