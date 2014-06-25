@@ -44,9 +44,11 @@ function GitHubPage(url, doc) {
   this.inject = function() {
     // inject header button
     if (buttonHeader) {
-      var sgButton = doc.createElement('li');
-      sgButton.innerHTML = '<a class="minibutton sg-button" target="_blank" href="'+urlToRepoSearch(info.repoid, '')+'">&#x2731; Search code</a>';
-      buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
+      if (!buttonHeader.querySelector('#sg-search-button')) {
+        var sgButton = doc.createElement('li');
+        sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button" target="_blank" href="'+urlToRepoSearch(info.repoid, '')+'">&#x2731; Search code</a>';
+        buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
+      }
     }
 
     // inject code element
