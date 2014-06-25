@@ -15,8 +15,7 @@ var context = {
   DEV: process.env.DEV,
 
   /*global process*/
-  url: (process.env.DEV ? 'http://localhost:3000' : 'https://aws-deploy.sgdev.org'),
-  // url: process.env.DEV ? 'http://localhost:3000' : 'https://sourcegraph.com'
+  url: (process.env.DEV ? 'http://localhost:3000' : 'http://beta.sourcegraph.com'),
 };
 
 // Clean build directory
@@ -33,7 +32,7 @@ gulp.task('copy', function() {
   return gulp.src(['*.png']).pipe(gulp.dest('build'));
 });
 
-//copy and compress HTML files
+// Copy and compress HTML files
 gulp.task('html', function() {
   return gulp.src('*.html')
     .pipe(template(context))
@@ -41,45 +40,31 @@ gulp.task('html', function() {
     .pipe(gulp.dest('build'));
 });
 
-//run scripts through JSHint
+// Run scripts through JSHint
 gulp.task('jshint', function() {
   return gulp.src(['*.js', '!gulpfile.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
 
-//copy vendor scripts and uglify all other scripts, creating source maps
+// Copy vendor scripts and uglify all other scripts, creating source maps
 // gulp.task('scripts', ['jshint'], function() {
 gulp.task('scripts', function() {
-  return gulp.src(['*.js', '!gulpfile.js'])
-    .pipe(template(context))
-    // .pipe(stripdebug())
-    // .pipe(uglify({outSourceMap: true}))
-    .pipe(gulp.dest('build'));
+  var s = gulp.src(['*.js', '!gulpfile.js'])
+    .pipe(template(context));
+  if (!context.DEV) {
+    s = s.pipe(uglify());
+  }
+  return s.pipe(gulp.dest('build'));
 });
 
-//minify styles
+// Minify styles
 gulp.task('styles', function() {
   return gulp.src('*.scss')
     .pipe(sass({errLogToConsole: true}))
     .pipe(minifycss({root: '.', keepSpecialComments: 0}))
     .pipe(gulp.dest('build'));
 });
-
-// // Build distributable and sourcemaps after other tasks completed
-// gulp.task('zip', ['html', 'scripts', 'styles', 'copy'], function() {
-//   var manifest = require('./src/manifest'),
-//   distFileName = manifest.name + ' v' + manifest.version + '.zip',
-//   mapFileName = manifest.name + ' v' + manifest.version + '-maps.zip';
-//   //collect all source maps
-//   gulp.src('build/scripts/**/*.map')
-//   .pipe(zip(mapFileName))
-//   .pipe(gulp.dest('dist'));
-//   //build distributable extension
-//   return gulp.src(['build/**', '!build/scripts/**/*.map'])
-//   .pipe(zip(distFileName))
-//   .pipe(gulp.dest('dist'));
-// });
 
 gulp.task('build', ['clean', 'html', 'scripts', 'styles', 'copy']);
 

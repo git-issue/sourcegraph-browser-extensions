@@ -14,6 +14,5 @@
     "storage",
     "<%= url %>/"
   ],
-  "content_security_policy": "script-src 'self' <%= url %>; object-src 'self' <%= url %>",
   "manifest_version": 2
 }

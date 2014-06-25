@@ -16,10 +16,8 @@ function main() {
 function maybeAnnotatePage() {
   var page = new GitHubPage(window.location.href, document);
   if (page.isValidGitHubPage) {
-    console.log('Valid public GitHub page:', page.info);
+    console.log('Sourcegraph extension running (page is publicly visible):', page.info);
     page.inject();
-  } else {
-    console.log('Not a valid public GitHub page:', window.location.href);
   }
 }
 
