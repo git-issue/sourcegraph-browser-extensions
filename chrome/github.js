@@ -36,11 +36,20 @@ function GitHubPage(url, doc) {
   this.isValidGitHubPage = true;
 
   var codeElem = doc.querySelector('table.file-code .code-body');
-  if (codeElem) {
+  if (codeElem && info.repoid && info.branch && info.path) {
     this.isCodePage = true;
   }
+  var buttonHeader = doc.querySelector('ul.pagehead-actions');
 
   this.inject = function() {
+    // inject header button
+    if (buttonHeader) {
+      var sgButton = doc.createElement('li');
+      sgButton.innerHTML = '<a class="minibutton sg-button" target="_blank" href="'+urlToRepoSearch(info.repoid, '')+'">&#x2731; Search code</a>';
+      buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
+    }
+
+    // inject code element
     if (this.isCodePage) {
       getAnnotatedCode(info, codeElem, function(fileInfo) {
         if (!fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
@@ -51,7 +60,7 @@ function GitHubPage(url, doc) {
               var codeWrapper = doc.querySelector('.blob-wrapper');
               var explain = doc.createElement('div')
               explain.id = "sg-alert";
-              explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="inline-button"><a href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>.';
+              explain.innerHTML = '&#x2731; Sourcegraph has not yet processed this file revision. View the <span class="sg-inline-button"><a target="_blank" href="'+urlToFile(info.repoid, 'master', info.path)+'">Newest available revision</a></span>';
               codeWrapper.insertBefore(explain, codeWrapper.firstChild);
             }
           });
@@ -85,6 +94,10 @@ function GitHubPage(url, doc) {
   function getRepositoryBuilds(repo_id, callback) {
     var url = '<%= url %>/api/repos/'+repo_id+'/.builds?Sort=updated_at&Direction=desc&PerPage=5&Succeeded=true';
     get(url, callback);
+  }
+
+  function urlToRepoSearch(repo_id, query) {
+    return '<%= url %>/'+escape(repo_id)+'/.search?q='+escape(query);
   }
 
   function urlToRepoCommit(repo_id, commit_id) {

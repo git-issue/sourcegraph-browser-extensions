@@ -85,7 +85,7 @@ $gh-header-border: 1px solid #d2d9dd;
     border-bottom: $gh-header-border;
     background-color: $gh-header-background-color;
 
-    .inline-button {
+    .sg-inline-button {
         padding: 0.3em 0.5em;
         border-radius: $gh-button-border-radius;
         background-image: $gh-button-background;
@@ -108,4 +108,8 @@ $gh-header-border: 1px solid #d2d9dd;
             }
         }
     }
+}
+
+.sg-button:hover {
+    border-color: $sg-blue-color !important;
 }
