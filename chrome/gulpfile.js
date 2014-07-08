@@ -15,7 +15,7 @@ var context = {
   DEV: process.env.DEV,
 
   /*global process*/
-  url: (process.env.DEV ? 'http://localhost:3000' : 'http://beta.sourcegraph.com'),
+  url: (process.env.DEV ? 'http://localhost:3000' : 'https://sourcegraph.com'),
 };
 
 // Clean build directory
