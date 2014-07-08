@@ -1,7 +1,7 @@
 {
   "name": "Sourcegraph<%= DEV ? "DEV" : "" %>",
   "version": "1.0.0",
-  "description": "Shows you how to use libraries on GitHub by annotating code and displaying usage examples from Sourcegraph",
+  "description": "Shows you how to use libraries on GitHub by annotating code with links to usage examples and documentation from Sourcegraph",
   "icons": {"128": "icon_128.png"},
   "content_scripts": [
     {
