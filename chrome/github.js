@@ -40,22 +40,32 @@ function GitHubPage(url, doc) {
   var buttonHeader = doc.querySelector('ul.pagehead-actions');
 
   this.inject = function() {
-    // inject header button
+    // inject header button if appropriate
     if (buttonHeader) {
-      if (!buttonHeader.querySelector('#sg-search-button')) {
-        var sgButton = doc.createElement('li');
-        sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button" target="_blank" href="'+urlToRepoSearch(info.repoid, '')+'">&#x2731; Search code</a>';
-        buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
-      }
+      getRepositoryBuilds(info.repoid, function(builds, status) { // only show search button if repository has been built
+        if (status !== 200 || !builds || builds.length == 0) {
+          return;
+        }
+
+        var sgButtonURL = urlToRepoSearch(info.repoid, '');
+        var sgButton = buttonHeader.querySelector('#sg-search-button-container');
+        if (!sgButton) {
+          sgButton = doc.createElement('li');
+          sgButton.id = 'sg-search-button-container';
+          buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
+        }
+        sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button" target="_blank" href="'+sgButtonURL+'">&#x2731; Search code</a>';
+      });
     }
 
-    // inject code element
+    // inject code element if appropriate
     if (this.isCodePage) {
-      getAnnotatedCode(info, codeElem, function(fileInfo) {
-        if (!fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
-          // Don't modify the view if no references are present
-          getRepositoryBuilds(info.repoid, function(builds) {
-            if (builds && builds.length > 0) {
+      getAnnotatedCode(info, codeElem, function(fileInfo, status) {
+        // If no references are present, don't modify the view
+        if (status !== 200 || !fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
+          // Show button to access most-recently processed build
+          getRepositoryBuilds(info.repoid, function(builds, status) {
+            if (status === 200 && builds && builds.length > 0) {
               // TODO(bliu): this is "commit most recently processed", but it really should be "last processed commit in history"
               var lastAvailableCommit = builds[0].CommitID;
 
@@ -115,7 +125,7 @@ function GitHubPage(url, doc) {
   function get(url, callback) {
     var req = new  XMLHttpRequest();
     req.onload = function() {
-      callback(this.response);
+      callback(this.response, this.status);
     }
     req.open('get', url, true);
     req.responseType = 'json';
