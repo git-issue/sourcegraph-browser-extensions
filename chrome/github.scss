@@ -11,10 +11,11 @@ $gh-header-border: 1px solid #d2d9dd;
     background-color: black;
 
     a {
-        text-decoration: underline;
-        color: #333;
+        color: #89bdff;
+        text-decoration: none;
         &:hover {
-            color: $sg-blue-color !important;
+            text-decoration: underline;
+            color: #89bdff !important;
         }
     }
 
