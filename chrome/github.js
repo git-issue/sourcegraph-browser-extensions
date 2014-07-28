@@ -37,6 +37,7 @@ function GitHubPage(url, doc) {
   if (codeElem && info.repoid && info.branch && info.path) {
     this.isCodePage = true;
   }
+  setupHoverListener(codeElem);
   var buttonHeader = doc.querySelector('ul.pagehead-actions');
 
   this.inject = function() {
@@ -145,6 +146,47 @@ function GitHubPage(url, doc) {
       };
     }
   }
+}
+
+function setupHoverListener($code) {
+  $code.addEventListener("mouseover", function(e) {
+    if (e.target.parentNode.nodeName == 'A') {
+      var $a = e.target.parentNode;
+      var defHref = $a.href;
+      getDefinition(defHref, function(err, popoverHTML) {
+        $a.setAttribute('aria-label', strip(popoverHTML));
+        $a.classList.add('tooltipped');
+        $a.classList.add('tooltipped-s');
+      });
+    }
+  });
+}
+
+function getDefinition(href, cb) {
+  var request = new XMLHttpRequest();
+  request.open('GET', href + "/.popover", true);
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400){
+      cb(null, request.responseText);
+    } else {
+      // console.error('Error getting Sourcegraph defn');
+    }
+  };
+
+  request.onerror = function() {
+    // console.error('Error getting Sourcegraph defn');
+  };
+
+  request.send();
+}
+
+function strip(html) {
+  var tmp = document.createElement("DIV");
+  tmp.innerHTML = html;
+  var s = tmp.textContent || tmp.innerText || "";
+  var parts = s.split("\n\n");
+  return parts[0].replace(/\n/g, '') + "\n" + parts[1].replace(/\n/g, '');
 }
 
 main();
