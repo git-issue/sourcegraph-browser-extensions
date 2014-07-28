@@ -81,21 +81,21 @@ function GitHubPage(url, doc) {
         }
 
         // Replace unlinked code with linked code
-        codeElem.innerHTML = '';
-
-        var sgContainer = doc.createElement('div');
+        var sgContainer = doc.createElement('pre');
         sgContainer.id = "sg-container";
-        sgContainer.innerHTML = '<pre>' + fileInfo.ContentsString + '</pre>';
+        sgContainer.innerHTML = fileInfo.ContentsString;
         var refs = sgContainer.querySelectorAll('a.ref')
         for (var i = 0; i < refs.length; i++) {
           refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
           refs[i].target = '_blank';
         }
+        // TODO(sqs): some code pages seem to need a margin-top:-17px on the
+        // codeElem.
+        sgContainer.classList.add('active');
         codeElem.appendChild(sgContainer);
-        window.setTimeout(function() {
-          sgContainer.classList.add('active');
-          codeElem.style.backgroundColor = 'black';
-        }, 0);
+        while (codeElem.firstChild && codeElem.firstChild.id != 'sg-container') {
+          codeElem.removeChild(codeElem.firstChild);
+        }
       });
     }
   };
