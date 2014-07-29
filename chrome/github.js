@@ -14,19 +14,24 @@ function main() {
 }
 
 function maybeAnnotatePage() {
-  var page = new GitHubPage(window.location.href, document);
+  var page = new GitHubPage(document);
   if (page.isValidGitHubPage) {
     console.log('Sourcegraph extension running (page is publicly visible):', page.info);
     page.inject();
   }
 }
 
-function GitHubPage(url, doc) {
+function GitHubPage(doc) {
   if (!doc.querySelector('body.vis-public')) return;
 
-  this.url = url;
+  var permalinkElem = doc.querySelector('a.js-permalink-shortcut');
+  if (!permalinkElem) {
+    console.error('Could not find permalink and retrieve commit ID');
+    return;
+  }
+
   this.doc = doc;
-  this.info = parseURL(this.url);
+  this.info = parseURL(permalinkElem.href);
   if (!this.info) return;
   var info = this.info;
 
