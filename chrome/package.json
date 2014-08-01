@@ -1,6 +1,6 @@
 {
   "name": "sourcegraph-chrome-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {},
   "devDependencies": {
     "gulp-clean": "~0.3.0",
