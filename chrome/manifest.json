@@ -6,8 +6,8 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
-      "css": ["github.css"],
-      "js": ["github.js"]
+      "css": ["github.css", "defn_popover.css"],
+      "js": ["github.js", "defn-popover.js"]
     }
   ],
   "permissions": [

@@ -93,6 +93,7 @@ function GitHubPage(doc) {
         for (var i = 0; i < refs.length; i++) {
           refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
           refs[i].target = '_blank';
+          refs[i].classList.add('defn-popover');
         }
         // TODO(sqs): some code pages seem to need a margin-top:-17px on the
         // codeElem.
@@ -101,6 +102,7 @@ function GitHubPage(doc) {
         while (codeElem.firstChild && codeElem.firstChild.id != 'sg-container') {
           codeElem.removeChild(codeElem.firstChild);
         }
+        sourcegraph_activateDefnPopovers(codeElem);
       });
     }
   };
