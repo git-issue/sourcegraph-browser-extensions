@@ -91,7 +91,9 @@ function GitHubPage(doc) {
         sgContainer.innerHTML = fileInfo.ContentsString;
         var refs = sgContainer.querySelectorAll('a.ref')
         for (var i = 0; i < refs.length; i++) {
-          refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
+          if (!/^https?:\/\//.test(refs[i].getAttribute('href'))) {
+            refs[i].href = '<%= url %>' + refs[i].getAttribute('href');
+          }
           refs[i].target = '_blank';
           refs[i].classList.add('defn-popover');
         }
@@ -108,7 +110,7 @@ function GitHubPage(doc) {
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
+    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true&LineDivs=true';
     get(url, callback);
   }
 
