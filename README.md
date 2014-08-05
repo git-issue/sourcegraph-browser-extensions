@@ -3,4 +3,4 @@
 
 **[Install the Sourcegraph Chrome extension on the Chrome Web Store](https://chrome.google.com/webstore/detail/sourcegraph/dgjhfomjieaadpoljlnidmbgkdffpack?hl=en)**
 
-[YouTube screencast of the Sourcegraph Chrome extension](https://www.youtube.com/watch?v=d9yZIrhLOVM)
+[YouTube screencast of the Sourcegraph Chrome extension](https://www.youtube.com/watch?v=fxXnwhOaHuk)
