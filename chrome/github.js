@@ -48,6 +48,11 @@ function GitHubPage(doc) {
     // inject header button if appropriate
     if (buttonHeader) {
       getRepositoryBuilds(info.repoid, function(builds, status) { // only show search button if repository has been built
+        if (status === 404) {
+          // Sourcegraph doesn't yet have this repository, so let's add it.
+          addRepository(info.repoid);
+          return;
+        }
         if (status !== 200 || !builds || builds.length == 0) {
           return;
         }
@@ -117,6 +122,13 @@ function GitHubPage(doc) {
   function getRepositoryBuilds(repo_id, callback) {
     var url = '<%= url %>/api/repos/'+repo_id+'/.builds?Sort=updated_at&Direction=desc&PerPage=5&Succeeded=true';
     get(url, callback);
+  }
+
+  function addRepository(repo_id) {
+    var url = '<%= url %>/api/repos/'+repo_id+'?ResolveRevision=true';
+    var req = new XMLHttpRequest();
+    req.open('PUT', url, true);
+    req.send();
   }
 
   function urlToRepoSearch(repo_id, query) {
