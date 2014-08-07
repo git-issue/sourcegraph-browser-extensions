@@ -54,6 +54,7 @@ function GitHubPage(doc) {
           return;
         }
         if (status !== 200 || !builds || builds.length == 0) {
+          console.log('Not adding Sourcegraph links to source code because status:', status);
           return;
         }
 
@@ -70,12 +71,16 @@ function GitHubPage(doc) {
 
     // inject code element if appropriate
     if (this.isCodePage) {
-      getAnnotatedCode(info, codeElem, function(fileInfo, status) {
+      getAnnotatedCode(info, fileElem, function(fileInfo, status) {
         // If no references are present, don't modify the view
         if (status !== 200 || !fileInfo.FormatResult || fileInfo.FormatResult.NumRefs === 0) {
           // Show button to access most-recently processed build
           getRepositoryBuilds(info.repoid, function(builds, status) {
-            if (status === 200 && builds && builds.length > 0) {
+            if (status === 404) {
+              // Sourcegraph doesn't yet have this repository, so let's add it.
+              addRepository(info.repoid);
+              return;
+            } else if (status === 200 && builds && builds.length > 0) {
               // TODO(bliu): this is "commit most recently processed", but it really should be "last processed commit in history"
               var lastAvailableCommit = builds[0].CommitID;
 
