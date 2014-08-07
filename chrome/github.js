@@ -38,8 +38,8 @@ function GitHubPage(doc) {
   // If we reach here, it's some sort of GitHub page
   this.isValidGitHubPage = true;
 
-  var codeElem = doc.querySelector('table.file-code .code-body');
-  if (codeElem && info.repoid && info.branch && info.path) {
+  var fileElem = doc.querySelector('.file-box .file');
+  if (fileElem && info.repoid && info.branch && info.path) {
     this.isCodePage = true;
   }
   var buttonHeader = doc.querySelector('ul.pagehead-actions');
@@ -97,7 +97,6 @@ function GitHubPage(doc) {
 
         // Replace unlinked code with linked code
         var sgContainer = doc.createElement('pre');
-        sgContainer.id = "sg-container";
         sgContainer.innerHTML = fileInfo.ContentsString;
         var refs = sgContainer.querySelectorAll('a.ref')
         for (var i = 0; i < refs.length; i++) {
@@ -107,14 +106,14 @@ function GitHubPage(doc) {
           refs[i].target = '_blank';
           refs[i].classList.add('defn-popover');
         }
-        // TODO(sqs): some code pages seem to need a margin-top:-17px on the
-        // codeElem.
-        sgContainer.classList.add('active');
-        codeElem.appendChild(sgContainer);
-        while (codeElem.firstChild && codeElem.firstChild.id != 'sg-container') {
-          codeElem.removeChild(codeElem.firstChild);
+
+        // Replace each line with the line from Sourcegraph.
+        var ghCodeElems = fileElem.querySelectorAll(".blob-line-code");
+        var sgCodeElems = sgContainer.querySelectorAll("div.line");
+        for (var i = 0; i < ghCodeElems.length; i++) {
+          ghCodeElems[i].innerHTML = sgCodeElems[i].innerHTML;
         }
-        sourcegraph_activateDefnPopovers(codeElem);
+        sourcegraph_activateDefnPopovers(fileElem);
       });
     }
   };
