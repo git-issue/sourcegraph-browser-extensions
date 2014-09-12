@@ -38,7 +38,7 @@ function GitHubPage(doc) {
   // If we reach here, it's some sort of GitHub page
   this.isValidGitHubPage = true;
 
-  var fileElem = doc.querySelector('.file-box .file');
+  var fileElem = doc.querySelector('.file-box .file .blob-wrapper');
   if (fileElem && info.repoid && info.branch && info.path) {
     this.isCodePage = true;
   }
@@ -95,9 +95,27 @@ function GitHubPage(doc) {
           return;
         }
 
-        // Replace unlinked code with linked code
-        var sgContainer = doc.createElement('pre');
+        // Prepare linked code
+        var sgContainer = doc.createElement('table');
+        sgContainer.id = 'sg-container';
+        sgContainer.classList.add('highlight');
+        sgContainer.classList.add('tab-size-8');
+        sgContainer.classList.add('js-file-line-container');
         sgContainer.innerHTML = fileInfo.ContentsString;
+        var numberOrLines = sgContainer.querySelectorAll('td');
+        for (var i = 0; i < numberOrLines.length; i++) {
+          var elem = numberOrLines[i];
+          console.log(elem);
+          if (elem.classList.contains('line-number')) {
+            elem.classList.add('blob-num');
+            elem.classList.add('js-line-number');
+          } else {
+            elem.classList.add('blob-code');
+            elem.classList.add('js-file-line');
+          }
+        }
+
+        // Annotate w/ popovers
         var refs = sgContainer.querySelectorAll('a.ref')
         for (var i = 0; i < refs.length; i++) {
           if (!/^https?:\/\//.test(refs[i].getAttribute('href'))) {
@@ -107,19 +125,19 @@ function GitHubPage(doc) {
           refs[i].classList.add('defn-popover');
         }
 
-        // Replace each line with the line from Sourcegraph.
-        var ghCodeElems = fileElem.querySelectorAll(".blob-line-code");
-        var sgCodeElems = sgContainer.querySelectorAll("div.line");
-        for (var i = 0; i < ghCodeElems.length; i++) {
-          ghCodeElems[i].innerHTML = sgCodeElems[i].innerHTML;
+        // Replace unlinked code with linked code
+        fileElem.appendChild(sgContainer);
+        while (fileElem.firstChild && fileElem.firstChild.id != 'sg-container') {
+          fileElem.removeChild(fileElem.firstChild);
         }
+
         sourcegraph_activateDefnPopovers(fileElem);
       });
     }
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true&LineDivs=true';
+    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true&LineNumberedTableRows=true';
     get(url, callback);
   }
 
