@@ -141,7 +141,7 @@ function GitHubPage(doc) {
   }
 
   function addRepository(repo_id) {
-    var url = '<%= url %>/api/repos/'+repo_id+'?ResolveRevision=true';
+    var url = '<%= url %>/api/repos/'+repo_id;
     var req = new XMLHttpRequest();
     req.open('PUT', url, true);
     req.send();
