@@ -95,25 +95,19 @@ function GitHubPage(doc) {
           return;
         }
 
+        // Create <tr> per line.
+        var html = fileInfo.ContentsString.split("\n").map(function(line, i) {
+          var lineno = i + 1;
+          return '<tr class="line"><td id="L' + lineno + '" class="blob-num js-line-number" data-line-number=' + lineno + '></td><td id="LC' + lineno + '" class="blob-code js-file-line">' + line + '</td></tr>';
+        }).join("");
+
         // Prepare linked code
         var sgContainer = doc.createElement('table');
         sgContainer.id = 'sg-container';
         sgContainer.classList.add('highlight');
         sgContainer.classList.add('tab-size-8');
         sgContainer.classList.add('js-file-line-container');
-        sgContainer.innerHTML = fileInfo.ContentsString;
-        var numberOrLines = sgContainer.querySelectorAll('td');
-        for (var i = 0; i < numberOrLines.length; i++) {
-          var elem = numberOrLines[i];
-          console.log(elem);
-          if (elem.classList.contains('line-number')) {
-            elem.classList.add('blob-num');
-            elem.classList.add('js-line-number');
-          } else {
-            elem.classList.add('blob-code');
-            elem.classList.add('js-file-line');
-          }
-        }
+        sgContainer.innerHTML = html;
 
         // Annotate w/ popovers
         var refs = sgContainer.querySelectorAll('a.ref')
@@ -137,7 +131,7 @@ function GitHubPage(doc) {
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true&LineNumberedTableRows=true';
+    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
     get(url, callback);
   }
 
