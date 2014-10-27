@@ -47,7 +47,7 @@ function GoDocOrgPage(doc) {
     // (e.g., 'Assign.String' -> 'Assign/String')
     id = id.replace(".", "/");
     var href = "https://sourcegraph.com/" + repoid + "@master/.GoPackage/" + fullPath + "/.def/" + id;
-    return "<a href='" + href + "' title='Find usage examples on Sourcegraph'>Show examples ✱</a>";
+    return "<a href='" + href + "' class='godoc-example' title='Find usage examples on Sourcegraph'>show ✱ examples</a>";
   }        
 
   function getURLPath(url) {

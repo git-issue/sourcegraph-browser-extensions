@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/*", "*://godoc.org/*"],
-      "css": ["github.css", "defn_popover.css"],
+      "css": ["github.css", "defn_popover.css", "godoc.css"],
       "js": ["github.js", "defn-popover.js", "godoc.js", "dispatch.js"]
     }
   ],
