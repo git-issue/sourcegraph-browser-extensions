@@ -1,6 +1,6 @@
-function main() {
+function GitHubMain() {
   // Run on first page load
-  maybeAnnotatePage();
+  maybeAnnotateGitHubPage();
 
   // Run on push-state
   //
@@ -9,11 +9,11 @@ function main() {
   pageScript.innerHTML = '$(document).on("pjax:success", function () { var evt = new Event("PJAX_PUSH_STATE_0923"); document.dispatchEvent(evt); });';
   document.querySelector('body').appendChild(pageScript);
   document.addEventListener('PJAX_PUSH_STATE_0923', function() {
-    maybeAnnotatePage();
+    maybeAnnotateGitHubPage();
   });
 }
 
-function maybeAnnotatePage() {
+function maybeAnnotateGitHubPage() {
   var page = new GitHubPage(document);
   if (page.isValidGitHubPage) {
     console.log('Sourcegraph extension running (page is publicly visible):', page.info);
@@ -183,5 +183,3 @@ function GitHubPage(doc) {
     }
   }
 }
-
-main();

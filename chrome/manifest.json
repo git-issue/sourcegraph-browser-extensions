@@ -1,13 +1,13 @@
 {
   "name": "Sourcegraph<%= DEV ? "DEV" : "" %>",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "Browse code on GitHub like you're in an IDE: instant documentation tooltips and jump-to-definition links for code on GitHub",
   "icons": {"128": "icon_128.png"},
   "content_scripts": [
     {
-      "matches": ["https://github.com/*"],
+      "matches": ["https://github.com/*", "*://godoc.org/*"],
       "css": ["github.css", "defn_popover.css"],
-      "js": ["github.js", "defn-popover.js"]
+      "js": ["github.js", "defn-popover.js", "godoc.js", "dispatch.js"]
     }
   ],
   "permissions": [
