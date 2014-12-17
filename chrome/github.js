@@ -16,14 +16,16 @@ function main() {
 function maybeAnnotatePage() {
   var page = new GitHubPage(document);
   if (page.isValidGitHubPage) {
-    console.log('Sourcegraph extension running (page is publicly visible):', page.info);
+    if (page.isPrivateGitHubPage) {
+      console.log('Sourcegraph extension running (page is private, no data has been sent to sourcegraph.com):', page.info);
+    } else {
+      console.log('Sourcegraph extension running (page is publicly visible):', page.info);
+    }
     page.inject();
   }
 }
 
 function GitHubPage(doc) {
-  if (!doc.querySelector('body.vis-public')) return;
-
   var permalinkElem = doc.querySelector('a.js-permalink-shortcut');
   if (!permalinkElem) {
     console.error('Could not find permalink and retrieve commit ID');
@@ -32,9 +34,11 @@ function GitHubPage(doc) {
 
   this.doc = doc;
   this.info = parseURL(permalinkElem.href);
-  if (!this.info) return;
+  if (!this.info) {
+    console.log("if (!this.info)");
+    return;
+  }
   var info = this.info;
-
   // If we reach here, it's some sort of GitHub page
   this.isValidGitHubPage = true;
 
@@ -44,28 +48,31 @@ function GitHubPage(doc) {
   }
   var buttonHeader = doc.querySelector('ul.pagehead-actions');
 
+  if (!doc.querySelector('body.vis-public')) {
+    // Short-circuit if the page is private.
+    this.isPrivateGitHubPage = true;
+    this.inject = function() {
+      if (buttonHeader) {
+        createSgButton(info.repoid, false);
+      }
+    }
+    return;
+  }
+
   this.inject = function() {
     // inject header button if appropriate
     if (buttonHeader) {
       getRepositoryBuilds(info.repoid, function(builds, status) { // only show search button if repository has been built
+        var search = true;
         if (status === 404) {
           // Sourcegraph doesn't yet have this repository, so let's add it.
           addRepository(info.repoid);
-          return;
-        }
-        if (status !== 200 || !builds || builds.length == 0) {
+          search = false;
+        } else if (status !== 200 || !builds || builds.length == 0) {
           console.log('Not adding Sourcegraph links to source code because status:', status);
-          return;
+          search = false;
         }
-
-        var sgButtonURL = urlToRepoSearch(info.repoid, '');
-        var sgButton = buttonHeader.querySelector('#sg-search-button-container');
-        if (!sgButton) {
-          sgButton = doc.createElement('li');
-          sgButton.id = 'sg-search-button-container';
-          buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
-        }
-        sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button" target="_blank" href="'+sgButtonURL+'">&#x2731; Search code</a>';
+        createSgButton(info.repoid, search);
       });
     }
 
@@ -130,6 +137,26 @@ function GitHubPage(doc) {
     }
   };
 
+  function createSgButton(repoid, search) {
+    if (search) {
+      var sgButtonURL = urlToRepoSearch(repoid, '');
+    } else {
+      var sgButtonURL = urlToRepo(repoid);
+    }
+    var sgButton = buttonHeader.querySelector('#sg-button-container');
+    if (!sgButton) {
+      sgButton = doc.createElement('li');
+      sgButton.id = 'sg-button-container';
+      buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
+    }
+    if (search) {
+      var text = "Search code";
+    } else {
+      var text = "Go to Sourcegraph";
+    }
+    sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button" target="_blank" href="'+sgButtonURL+'">&#x2731; ' + text + '</a>';
+  }
+
   function getAnnotatedCode(info, codeElem, callback) {
     var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
     get(url, callback);
@@ -145,6 +172,10 @@ function GitHubPage(doc) {
     var req = new XMLHttpRequest();
     req.open('PUT', url, true);
     req.send();
+  }
+
+  function urlToRepo(repo_id) {
+    return '<%= url %>/'+escape(repo_id);
   }
 
   function urlToRepoSearch(repo_id, query) {
