@@ -27,17 +27,16 @@ function maybeAnnotatePage() {
 
 function GitHubPage(doc) {
   var permalinkElem = doc.querySelector('a.js-permalink-shortcut');
-  if (!permalinkElem) {
-    console.error('Could not find permalink and retrieve commit ID');
-    return;
+  if (permalinkElem) {
+    this.info = parseURL(permalinkElem.href);
+  } else {
+    this.info = parseURL(document.URL);
   }
 
-  this.doc = doc;
-  this.info = parseURL(permalinkElem.href);
-  if (!this.info) {
-    console.log("if (!this.info)");
+  if (!this.info.repoid) {
     return;
   }
+  this.doc = doc;
   var info = this.info;
   // If we reach here, it's some sort of GitHub page
   this.isValidGitHubPage = true;
@@ -204,6 +203,7 @@ function GitHubPage(doc) {
     var m = url.match(/^https:\/\/github\.com\/([^\/#]+)\/([^\/#]+)(?:\/blob\/([^\/#]+)\/([^#]+))?(?:#[^\/]*)?/);
     if (m) {
       var owner = m[1], name = m[2], branch = m[3], path = m[4];
+      if (!owner || !name) return;
       return {
         repoid: 'github.com/' + owner + '/' + name,
         owner: owner,
