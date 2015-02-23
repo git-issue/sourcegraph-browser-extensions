@@ -16,16 +16,14 @@ function main() {
 function maybeAnnotatePage() {
   var page = new GitHubPage(document);
   if (page.isValidGitHubPage) {
-    if (page.isPrivateGitHubPage) {
-      console.log('Sourcegraph extension running (page is private, no data has been sent to sourcegraph.com):', page.info);
-    } else {
-      console.log('Sourcegraph extension running (page is publicly visible):', page.info);
-    }
+    console.log('Sourcegraph extension running (page is publicly visible):', page.info);
     page.inject();
   }
 }
 
 function GitHubPage(doc) {
+  if (!doc.querySelector('body.vis-public')) return;
+
   var permalinkElem = doc.querySelector('a.js-permalink-shortcut');
   if (permalinkElem) {
     this.info = parseURL(permalinkElem.href);
