@@ -1,6 +1,6 @@
 {
   "name": "Sourcegraph<%= DEV ? "DEV" : "" %>",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Browse code on GitHub like you're in an IDE: instant documentation tooltips and jump-to-definition links for code on GitHub",
   "icons": {"128": "icon_128.png"},
   "content_scripts": [
