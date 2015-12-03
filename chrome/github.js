@@ -138,7 +138,11 @@ function GitHubPage(doc) {
   }
 
   function getRepositoryBuild(repo_id, commitID, callback) {
-    var url = '<%= url %>/.api/repos/' + repo_id + '@' + commitID + '/.build'
+    var url = '<%= url %>/.api/repos/' + repo_id;
+    if(commitID) {
+      url += '@'+commitID;
+    }
+    url += '/.build';
     get(url, callback);
   }
 
