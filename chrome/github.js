@@ -133,17 +133,17 @@ function GitHubPage(doc) {
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
+    var url = '<%= url %>/.api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
     get(url, callback);
   }
 
   function getRepositoryBuild(repo_id, commitID, callback) {
-    var url = '<%= url %>/api/repos/' + repo_id + '@' + commitID + '/.build'
+    var url = '<%= url %>/.api/repos/' + repo_id + '@' + commitID + '/.build'
     get(url, callback);
   }
 
   function addRepository(repo_id) {
-    var url = '<%= url %>/api/repos/'+repo_id;
+    var url = '<%= url %>/.api/repos/'+repo_id;
     var req = new XMLHttpRequest();
     req.open('PUT', url, true);
     req.send();
