@@ -22,14 +22,24 @@ repositories to Sourcegraph.
 
 ## Development
 
-To build, run `gulp`. Then go to `chrome:extensions` in Chrome and use *Load Unpacked Extension* to
-load the `chrome/build` extension directory.
+## Prerequisites
+
+Install [Gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started) and [NodeJS](https://nodejs.org/en/download/), then install the dependencies:
+```
+cd chrome/
+npm install
+```
+
+## Building
+
+To build and watch the source files for changes, run `gulp`. Then go to `chrome://extensions`
+in Chrome, check "Developer mode" and use *Load Unpacked Extension* to load the
+`chrome/build` extension directory.
 
 To reload the Chrome extension when you change files, install
 [Extensions Reloader](https://chrome.google.com/webstore/detail/fimgfedafeadlieiabdeeaodndnlbhid)
-and run `grunt watch`.
+and run `gulp watch`.
 
-To inject content from https://localhost:3000 instead of from
-https://sourcegraph.com, set the env var `DEV=1` on the `grunt` command.
-
-
+To inject content from http://localhost:3080 instead of from
+https://sourcegraph.com, run `DEV=1 grunt`. GitHub is HTTPS-only, so you may
+need to [allow mixed content](http://superuser.com/a/487772) temporarily.
