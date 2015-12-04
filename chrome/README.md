@@ -43,3 +43,16 @@ and run `gulp watch`.
 To inject content from http://localhost:3080 instead of from
 https://sourcegraph.com, run `DEV=1 grunt`. GitHub is HTTPS-only, so you may
 need to [allow mixed content](http://superuser.com/a/487772) temporarily.
+
+## Publishing
+
+To publish a new version:
+
+1. Visit the [Chrome Web Store](https://chrome.google.com/webstore).
+1. Click the Settings gear in top right corner -> `Developer Dashboard`.
+1. Choose the right extension with the `Status` of `Published` and click `Edit`.
+1. Bump the version in `manifest.json` to be greater than the current one.
+1. Run `gulp build` to build the extension -> test that it works by loading it into Chrome via *Load Unpacked Extension*!
+1. `cd build/ && zip -r ../../release.zip .` to create the zip.
+1. Click `Upload Updated Package` on the developer dashboard to upload the new `release.zip`.
+1. Scroll to bottom of page and hit `Publish Changes`.
