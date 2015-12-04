@@ -100,7 +100,7 @@ function GitHubPage(doc) {
         // Create <tr> per line.
         var html = fileInfo.ContentsString.split("\n").map(function(line, i) {
           var lineno = i + 1;
-          return '<tr class="line"><td id="L' + lineno + '" class="blob-num js-line-number" data-line-number=' + lineno + '></td><td id="LC' + lineno + '" class="blob-code js-file-line">' + line + '</td></tr>';
+          return '<tr class="line"><td id="L' + lineno + '" class="blob-num js-line-number" data-line-number=' + lineno + '></td><td id="LC' + lineno + '" class="blob-code blob-code-inner js-file-line">' + line + '</td></tr>';
         }).join("");
 
         // Prepare linked code
@@ -133,17 +133,21 @@ function GitHubPage(doc) {
   };
 
   function getAnnotatedCode(info, codeElem, callback) {
-    var url = '<%= url %>/api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
+    var url = '<%= url %>/.api/repos/' + info.repoid + '@' + info.branch + '/.tree/' + info.path + '?Formatted=true&ContentsAsString=true';
     get(url, callback);
   }
 
   function getRepositoryBuild(repo_id, commitID, callback) {
-    var url = '<%= url %>/api/repos/' + repo_id + '@' + commitID + '/.build'
+    var url = '<%= url %>/.api/repos/' + repo_id;
+    if(commitID) {
+      url += '@'+commitID;
+    }
+    url += '/.build';
     get(url, callback);
   }
 
   function addRepository(repo_id) {
-    var url = '<%= url %>/api/repos/'+repo_id;
+    var url = '<%= url %>/.api/repos/'+repo_id;
     var req = new XMLHttpRequest();
     req.open('PUT', url, true);
     req.send();

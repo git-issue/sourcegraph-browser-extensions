@@ -12,10 +12,10 @@ uglify = require('gulp-uglify'),
 zip = require('gulp-zip');
 
 var context = {
-  DEV: process.env.DEV,
+  DEV: process.env.DEV || false,
 
   /*global process*/
-  url: (process.env.DEV ? 'http://localhost:3000' : 'https://sourcegraph.com'),
+  url: (process.env.DEV ? 'http://localhost:3080' : 'https://sourcegraph.com'),
 };
 
 // Clean build directory
@@ -68,19 +68,9 @@ gulp.task('styles', function() {
 
 gulp.task('build', ['clean', 'html', 'scripts', 'styles', 'copy']);
 
-gulp.task('reload_chrome_extensions', function() {
-  // /*global require*/
-  // var exec = require('child_process').exec;
-  // exec('chromium-browser http://reload.extensions', function(err) {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
-});
-
 gulp.task('watch', function() {
-  gulp.watch(['*.js', '*.scss', '*.html', '*.json'], ['build', 'reload_chrome_extensions']);
+  gulp.watch(['*.js', '*.scss', '*.html', '*.json'], ['build']);
 });
 
 // Run all tasks after build directory has been cleaned
-gulp.task('default', ['clean', 'build', 'reload_chrome_extensions', 'watch']);
+gulp.task('default', ['clean', 'build', 'watch']);
