@@ -59,15 +59,6 @@ function GitHubPage(doc) {
           console.log('Not adding Sourcegraph links to source code because status:', status);
           return;
         }
-
-        var sgButtonURL = urlToRepoSearch(info.repoid, '');
-        var sgButton = buttonHeader.querySelector('#sg-search-button-container');
-        if (!sgButton) {
-          sgButton = doc.createElement('li');
-          sgButton.id = 'sg-search-button-container';
-          buttonHeader.insertBefore(sgButton, buttonHeader.firstChild);
-        }
-          sgButton.innerHTML = '<a id="sg-search-button" class="minibutton sg-button tooltipped tooltipped-s" aria-label="Search within this repository on Sourcegraph" target="_blank" href="'+sgButtonURL+'">&#x2731; Search code</a>';
       });
     }
 
