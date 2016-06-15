@@ -2,7 +2,7 @@
 
 This is an issue tracker for the Sourcegraph Chrome extension.
 
-[The source code for the extension lives on Sourcegraph](https://sourcegraph.com/sourcegraph/sourcegraph@master/-/tree/chromeext)
+[The source code for the extension lives on Sourcegraph](https://sourcegraph.com/sourcegraph/sourcegraph@master/-/tree/client/browser-ext/chrome)
 
 **[Install the Sourcegraph Chrome extension on the Chrome Web Store](https://chrome.google.com/webstore/detail/sourcegraph-chrome-extens/dgjhfomjieaadpoljlnidmbgkdffpack)**
 
